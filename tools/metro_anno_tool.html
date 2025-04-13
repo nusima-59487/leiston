@@ -48,7 +48,7 @@
             width: 80%;
         }
         .tooltip {
-            width: 60%;
+            width: 20%;
             min-width: 17em;
         }
         #output {
@@ -63,6 +63,9 @@
         #main {
             min-height: 100%;
             flex-grow: 1;
+        }
+        .sections {
+            margin-bottom: .8em;
         }
     </style>
 </head>
@@ -100,106 +103,112 @@
 
             <br>
 
-            <div id="section_ns"></div>
-            <label for="cns">Next Station Sign</label>
-            <input type="checkbox" name="e" id="cns">
-            <div id="ans" hidden>
-                <label for="tnse">English Name</label>
-                <input type="text" name="tnse" id="tnse">
-                <br>
-                <label for="tnsc">Chinese Name</label>
-                <input type="text" name="tnsc" id="tnsc">
+            <div id="section_ns" class="sections">
+                <label for="cns">Next Station Sign</label>
+                <input type="checkbox" name="e" id="cns">
+                <div id="ans" hidden>
+                    <label for="tnse">English Name</label>
+                    <input type="text" name="tnse" id="tnse">
+                    <br>
+                    <label for="tnsc">Chinese Name</label>
+                    <input type="text" name="tnsc" id="tnsc">
+                </div>
             </div>
             
-            <div id="section_i"></div>
-            <label for="ci">Interchange sign</label>
-            <input type="checkbox" name="e" id="ci">
-            <div id="ai" hidden>
-                <div id="ail">
-                    <div id="ai0" class="aii">
-                        <label for="ai0init">Initial</label>
-                        <input class="tinit" type="text" name="ai0init" id="ai0init" required>
-                        <label for="ai0chnn">Chn Name</label>
-                        <input type="text" name="ai0chnn" id="ai0chnn" class="tichn" required>
-                        <label for="ai0color">Color</label>
-                        <input class="tic" type="color" name="ai0color" id="ai0color" required>
-                        <button type="button" onclick="removeLine(0)">Remove</button>
+            <div id="section_i" class="sections">
+                <label for="ci">Interchange sign</label>
+                <input type="checkbox" name="e" id="ci">
+                <div id="ai" hidden>
+                    <div id="ail">
+                        <div id="ai0" class="aii">
+                            <label for="ai0init">Initial</label>
+                            <input class="tinit" type="text" name="ai0init" id="ai0init" required>
+                            <label for="ai0chnn">Chn Name</label>
+                            <input type="text" name="ai0chnn" id="ai0chnn" class="tichn" required>
+                            <label for="ai0color">Color</label>
+                            <input class="tic" type="color" name="ai0color" id="ai0color" required>
+                            <button type="button" onclick="removeLine(0)">Remove</button>
+                        </div>
                     </div>
+                    <button type="button" id="aip">Add line</button>
+                    <script>
+                        var intid = 1; 
+                        document.getElementById("aip").addEventListener("click", (e) => {
+                            var toAppendStr = `<div id="ai${intid}" class="aii">
+                            <label for="ai${intid}init">Initial</label>
+                            <input type="text" name="ai${intid}init" id="ai${intid}init" class="tinit" required>
+                            <label for="ai${intid}chnn">Chn Name</label>
+                            <input type="text" name="ai${intid}chnn" id="ai${intid}chnn" class="tichn" required>
+                            <label for="ai${intid}color">Color</label>
+                            <input type="color" name="ai${intid}color" id="ai${intid}color" class="tic" required>
+                            <button type="button" onclick="removeLine(${intid})">Remove</button>
+                            </div>`
+
+                            var toAppend = new DOMParser().parseFromString(toAppendStr, "text/html")
+
+                            // document.getElementById("ail").appendChild(toAppend)
+
+                            document.getElementById("ail").insertAdjacentHTML( 'beforeend', toAppendStr);
+                            // document.getElementById("ail").innerHTML += `<div id="ai${intid}" class="aii">
+                            // <label for="ai${intid}init">Initial</label>
+                            // <input type="text" name="ai${intid}init" id="ai${intid}init" class="tinit" required>
+                            // <label for="ai${intid}chnn">Chn Name</label>
+                            // <input type="text" name="ai${intid}chnn" id="ai${intid}chnn" class="tichn" required>
+                            // <label for="ai${intid}color">Color</label>
+                            // <input type="color" name="ai${intid}color" id="ai${intid}color" class="tic" required>
+                            // <button type="button" onclick="removeLine(${intid})">Remove</button>
+                            // </div>`
+
+                        intid++; 
+                        })
+
+                        function removeLine(line_id) {
+                            var e = document.getElementById(`ai${line_id}`); 
+                            e.remove()
+                        }
+                    </script>
                 </div>
-                <button type="button" id="aip">Add line</button>
-                <script>
-                    var intid = 1; 
-                    document.getElementById("aip").addEventListener("click", (e) => {
-                        var toAppendStr = `<div id="ai${intid}" class="aii">
-                        <label for="ai${intid}init">Initial</label>
-                        <input type="text" name="ai${intid}init" id="ai${intid}init" class="tinit" required>
-                        <label for="ai${intid}chnn">Chn Name</label>
-                        <input type="text" name="ai${intid}chnn" id="ai${intid}chnn" class="tichn" required>
-                        <label for="ai${intid}color">Color</label>
-                        <input type="color" name="ai${intid}color" id="ai${intid}color" class="tic" required>
-                        <button type="button" onclick="removeLine(${intid})">Remove</button>
-                        </div>`
-
-                        var toAppend = new DOMParser().parseFromString(toAppendStr, "text/html")
-
-                        // document.getElementById("ail").appendChild(toAppend)
-
-                        document.getElementById("ail").insertAdjacentHTML( 'beforeend', toAppendStr);
-                        // document.getElementById("ail").innerHTML += `<div id="ai${intid}" class="aii">
-                        // <label for="ai${intid}init">Initial</label>
-                        // <input type="text" name="ai${intid}init" id="ai${intid}init" class="tinit" required>
-                        // <label for="ai${intid}chnn">Chn Name</label>
-                        // <input type="text" name="ai${intid}chnn" id="ai${intid}chnn" class="tichn" required>
-                        // <label for="ai${intid}color">Color</label>
-                        // <input type="color" name="ai${intid}color" id="ai${intid}color" class="tic" required>
-                        // <button type="button" onclick="removeLine(${intid})">Remove</button>
-                        // </div>`
-
-                    intid++; 
-                    })
-
-                    function removeLine(line_id) {
-                        var e = document.getElementById(`ai${line_id}`); 
-                        e.remove()
-                    }
-                </script>
             </div>
 
-            <div id="section_c"></div>
-            <label for="cc">Connections sign</label>
-            <input type="checkbox" name="e" id="cc">
-            <div id="ac" hidden>
-                <label for="tce">English Name</label>
-                <input type="text" name="tce" id="tce"><br>
-                <label for="tcc"> Chinese Name</label>
-                <input type="text" name="tcc" id="tcc">
+            <div id="section_c" class="sections">
+                <label for="cc">Connections sign</label>
+                <input type="checkbox" name="e" id="cc">
+                <div id="ac" hidden>
+                    <label for="tce">English Name</label>
+                    <input type="text" name="tce" id="tce"><br>
+                    <label for="tcc"> Chinese Name</label>
+                    <input type="text" name="tcc" id="tcc">
+                </div>
             </div>
 
-            <div id="section_sas"></div>
-            <label for="csas">Shortly Arriving at station Sign</label>
-            <input type="checkbox" name="e" id="csas">
-            <div id="asas" hidden>
-                <label for="tsase">English Name</label>
-                <input type="text" name="tsase" id="tsase" disabled>
-                <br>
-                <label for="tsasc">Chinese Name</label>
-                <input type="text" name="tsasc" id="tsasc" disabled>
+            <div id="section_sas" class="sections">
+                <label for="csas">Shortly Arriving at station Sign</label>
+                <input type="checkbox" name="e" id="csas">
+                <div id="asas" hidden>
+                    <label for="tsase">English Name</label>
+                    <input type="text" name="tsase" id="tsase" disabled>
+                    <br>
+                    <label for="tsasc">Chinese Name</label>
+                    <input type="text" name="tsasc" id="tsasc" disabled>
+                </div>
             </div>
 
-            <div id="section_t"></div>
-            <label for="ct">Terminus Sign</label>
-            <input type="checkbox" name="e" id="ct">
-            <div id="at" hidden>
+            <div id="section_t" class="sections">
+                <label for="ct">Terminus Sign</label>
+                <input type="checkbox" name="e" id="ct">
+                <div id="at" hidden>
+                </div>
             </div>
 
-            <div id="section_d"></div>
-            <label for="cd">Doors opening direction Sign</label>
-            <input type="checkbox" name="e" id="cd">
-            <div id="ad" hidden>
-                <input type="radio" name="cd" id="cdl">
-                <label for="cdl">Left</label>
-                <input type="radio" name="cd" id="cdr">
-                <label for="cdr">Right</label>
+            <div id="section_d" class="sections">
+                <label for="cd">Doors opening direction Sign</label>
+                <input type="checkbox" name="e" id="cd">
+                <div id="ad" hidden>
+                    <input type="radio" name="cd" id="cdl">
+                    <label for="cdl">Left</label>
+                    <input type="radio" name="cd" id="cdr">
+                    <label for="cdr">Right</label>
+                </div>
             </div>
 
             <button type="button" id="submit">Generate</button>
