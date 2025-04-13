@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Metro Announcement Tool</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        html{
+            height: 100%;
+        }
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+
+            box-sizing: border-box;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+        #content {
+            box-sizing: border-box;
+            min-height: 100%;
+            display: flex;
+            flex-direction: row-reverse;
+            flex-grow: 1;
+        }
+        #content>div{
+            margin: 8px;
+        }
+        input[type='checkbox'],button[type='submit']{
+            margin-top: 2em;
+            margin-bottom: .75em;
+        }
+        code {
+            padding: .5em;
+            color: black;
+            background: gainsboro;
+            border: 1px solid gray;
+        }
+        code.codeoutput {
+            display: block;
+            margin-top: 0.7em;
+            width: 80%;
+        }
+        .tooltip {
+            width: 60%;
+            min-width: 17em;
+        }
+        #output {
+            margin-top: 1.2em;
+        }
+        footer {
+            width: 100%;
+            background-color: gainsboro;
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+        #main {
+            min-height: 100%;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <div class="tooltip">
+            <h4>Lines <small> - In order</small></h4>
+            <p>Cyanwoods Line / 青林綫 / CWL / <span style="background-color: #00AA00;"> --- </span></p> 
+            <p>Central Line / 市中心綫 / CRL / <span style="background-color: #cc0000;"> --- </span></p> 
+            <p>Admiralty Line / 軍澳綫 / AML / <span style="background-color: #ffaa00;"> --- </span></p> 
+            <p>Heronton Line / 希朗頓綫 / HRL / <span style="background-color: #aa00aa;"> --- </span></p> 
+            <p>Aisenceau Line / 艾鋅索綫 / ASL / <span style="background-color: #55ff55;"> --- </span></p> 
+            <p>Charons Line / 查朗斯綫 / CHL / <span style="background-color: #0000aa;"> --- </span></p> 
+            <p>Airport Line / 機場綫 / AIL / <span style="background-color: #00aaaa;"> --- </span></p> 
+            <hr>
+            <h4>Config <small> - 20250413 Edition</small></h4>
+            <p>0   - Iron fence location</p>
+            <p>91  - <code>+train removeempty</code></p>
+            <p>92  - Next Station sign</p>
+            <p>104 - (Interchange / Connections)</p>
+            <p>116 - (Connections)</p>
+            <br>
+            <p>-116 - (Shortly arriving Sign)</p>
+            <p>-104 - Arriving at Sign / (Terminus Sign)</p>
+            <p>-92  - Doors opening Sign</p>
+            <p>-91  - Train Spawn cmd block</p>
+        </div>
+
+        <div id="main">
+            <label for="linit">Line Initial</label>
+            <input type="text" name="linit" id="linit" required>
+            <label for="lcolor">Line Color</label>
+            <input type="color" name="lcolor" id="lcolor" required>
+
+            <br>
+
+            <div id="section_ns"></div>
+            <label for="cns">Next Station Sign</label>
+            <input type="checkbox" name="e" id="cns">
+            <div id="ans" hidden>
+                <label for="tnse">English Name</label>
+                <input type="text" name="tnse" id="tnse">
+                <br>
+                <label for="tnsc">Chinese Name</label>
+                <input type="text" name="tnsc" id="tnsc">
+            </div>
+            
+            <div id="section_i"></div>
+            <label for="ci">Interchange sign</label>
+            <input type="checkbox" name="e" id="ci">
+            <div id="ai" hidden>
+                <div id="ail">
+                    <div id="ai0" class="aii">
+                        <label for="ai0init">Initial</label>
+                        <input class="tinit" type="text" name="ai0init" id="ai0init" required>
+                        <label for="ai0chnn">Chn Name</label>
+                        <input type="text" name="ai0chnn" id="ai0chnn" class="tichn" required>
+                        <label for="ai0color">Color</label>
+                        <input class="tic" type="color" name="ai0color" id="ai0color" required>
+                        <button type="button" onclick="removeLine(0)">Remove</button>
+                    </div>
+                </div>
+                <button type="button" id="aip">Add line</button>
+                <script>
+                    var intid = 1; 
+                    document.getElementById("aip").addEventListener("click", (e) => {
+                        var toAppendStr = `<div id="ai${intid}" class="aii">
+                        <label for="ai${intid}init">Initial</label>
+                        <input type="text" name="ai${intid}init" id="ai${intid}init" class="tinit" required>
+                        <label for="ai${intid}chnn">Chn Name</label>
+                        <input type="text" name="ai${intid}chnn" id="ai${intid}chnn" class="tichn" required>
+                        <label for="ai${intid}color">Color</label>
+                        <input type="color" name="ai${intid}color" id="ai${intid}color" class="tic" required>
+                        <button type="button" onclick="removeLine(${intid})">Remove</button>
+                        </div>`
+
+                        var toAppend = new DOMParser().parseFromString(toAppendStr, "text/html")
+
+                        // document.getElementById("ail").appendChild(toAppend)
+
+                        document.getElementById("ail").insertAdjacentHTML( 'beforeend', toAppendStr);
+                        // document.getElementById("ail").innerHTML += `<div id="ai${intid}" class="aii">
+                        // <label for="ai${intid}init">Initial</label>
+                        // <input type="text" name="ai${intid}init" id="ai${intid}init" class="tinit" required>
+                        // <label for="ai${intid}chnn">Chn Name</label>
+                        // <input type="text" name="ai${intid}chnn" id="ai${intid}chnn" class="tichn" required>
+                        // <label for="ai${intid}color">Color</label>
+                        // <input type="color" name="ai${intid}color" id="ai${intid}color" class="tic" required>
+                        // <button type="button" onclick="removeLine(${intid})">Remove</button>
+                        // </div>`
+
+                    intid++; 
+                    })
+
+                    function removeLine(line_id) {
+                        var e = document.getElementById(`ai${line_id}`); 
+                        e.remove()
+                    }
+                </script>
+            </div>
+
+            <div id="section_c"></div>
+            <label for="cc">Connections sign</label>
+            <input type="checkbox" name="e" id="cc">
+            <div id="ac" hidden>
+                <label for="tce">English Name</label>
+                <input type="text" name="tce" id="tce"><br>
+                <label for="tcc"> Chinese Name</label>
+                <input type="text" name="tcc" id="tcc">
+            </div>
+
+            <div id="section_sas"></div>
+            <label for="csas">Shortly Arriving at station Sign</label>
+            <input type="checkbox" name="e" id="csas">
+            <div id="asas" hidden>
+                <label for="tsase">English Name</label>
+                <input type="text" name="tsase" id="tsase" disabled>
+                <br>
+                <label for="tsasc">Chinese Name</label>
+                <input type="text" name="tsasc" id="tsasc" disabled>
+            </div>
+
+            <div id="section_t"></div>
+            <label for="ct">Terminus Sign</label>
+            <input type="checkbox" name="e" id="ct">
+            <div id="at" hidden>
+            </div>
+
+            <div id="section_d"></div>
+            <label for="cd">Doors opening direction Sign</label>
+            <input type="checkbox" name="e" id="cd">
+            <div id="ad" hidden>
+                <input type="radio" name="cd" id="cdl">
+                <label for="cdl">Left</label>
+                <input type="radio" name="cd" id="cdr">
+                <label for="cdr">Right</label>
+            </div>
+
+            <button type="button" id="submit">Generate</button>
+
+            <div readonly id="output"></div>
+
+            <script>
+                document.getElementById("submit").addEventListener("click", (e) => {
+                    var ns = document.getElementById("cns"); // Next Station
+                    var sas = document.getElementById("csas"); // shortly arriving stn
+                    var d = document.getElementById("cd"); // doors
+                    var t = document.getElementById("ct") // terminus
+                    var c = document.getElementById("cc") // connection
+                    var i = document.getElementById("ci"); //Interchagne
+
+                    var linit = document.getElementById("linit").value; 
+                    var lcolor = document.getElementById("lcolor").value; 
+
+                    var output = document.getElementById("output")
+
+                    output.innerHTML = ""
+                    if (ns.checked) {
+                        var nse = document.getElementById("tnse").value; 
+                        var nsc = document.getElementById("tnsc").value; 
+                        output.innerHTML += `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"Next Station: ","color":"white"},{"text":"${nse}","color":"yellow"},"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"下一站: ","color":"white"},{"text":"${nsc}","color":"yellow", "bold": true}]']}}]</code>`; 
+                    }
+                    if (c.checked) {
+                        var ce = document.getElementById("tce").value; 
+                        var cc = document.getElementById("tcc").value; 
+                        output.innerHTML += `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"Connect to: ${ce}","color":"white"},"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"連接: ${cc}","color":"white", "bold": true}]']}}]</code>`; 
+                    }
+                    if (i.checked) {
+                        var linesdiv = document.getElementsByClassName("aii"); 
+
+                        var pref = `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"Interchange: ","color":"white"},`; 
+                        var engl = "";
+                        var midd = `"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"可轉乘: ","color":"white", "bold": true},`
+                        var chin = ""; 
+                        var suff = `""]']}}]</code>`
+                        for (let j = 0; j < linesdiv.length; j++) {
+                            var lnnit = linesdiv[j].getElementsByClassName("tinit")[0].value; 
+                            var lnchn = linesdiv[j].getElementsByClassName("tichn")[0].value; 
+                            var lnc = linesdiv[j].getElementsByClassName("tic")[0].value; 
+
+                            engl += `{"text":"(${lnnit}) ","color":"${lnc}"},`
+                            chin += `{"text":"(","color":"${lnc}"},{"text":"${lnchn}","bold":true,"color":"${lnc}"},{"text":") ","color":"${lnc}"},`
+                        }
+
+                        var final = pref + engl + midd + chin + suff
+
+                        output.innerHTML += final
+                    }
+                    if (sas.checked) {
+                        var nse = document.getElementById("tnse").value; 
+                        var nsc = document.getElementById("tnsc").value; 
+                        output.innerHTML += `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"Shortly Arriving at: ","color":"white"},{"text":"${nse}","color":"yellow"},"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text":"即將抵達: ","color":"white"},{"text":"${nsc}","color":"yellow", "bold": true}]']}}]</code>`; 
+                    }
+                    if (t.checked) output.innerHTML += `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text": "Arrived Terminal", "color": "white"},"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text": "已抵達終點站","color": "white", "bold": true}]']}}]</code>`;
+                    if (d.checked) {
+                        var direction = document.querySelector('input[name="cd"]:checked').id
+                        if (direction == "cdr") output.innerHTML += `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text": "<<< ","color": "gray"},{"text": "Doors opening direction","color": "white"},{"text": " >>>","color": "green"},"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text": "<<< ","color": "gray"},{"text": "車門開啓方向","bold": true,"color": "white"},{"text": " >>>","color": "green"}]']}}]</code>`; 
+                        else if (direction=="cdl") output.innerHTML += `<code class="codeoutput">/minecraft:give @p birch_sign[block_entity_data={id:birch_sign,front_text:{messages:['"[+train]"','"announcement"','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text": "<<< ","color": "green"},{"text": "Doors opening direction","color": "white"},{"text": " >>>","color": "gray"},"\\\\n"]','["",{"text":"[${linit}] ","color":"${lcolor}"},{"text": "<<< ","color": "green"},{"text": "車門開啓方向","bold": true,"color": "white"},{"text": " >>>","color": "gray"}]']}}]</code>`; 
+                    }
+                })
+
+                document.getElementById("cns").addEventListener("change", (e) => {
+                    document.getElementById("ans").toggleAttribute("hidden")
+                })
+                document.getElementById("csas").addEventListener("change", (e) => {
+                    document.getElementById("asas").toggleAttribute("hidden")
+                })
+                document.getElementById("cd").addEventListener("change", (e) => {
+                    document.getElementById("ad").toggleAttribute("hidden")
+                })
+                document.getElementById("ct").addEventListener("change", (e) => {
+                    document.getElementById("at").toggleAttribute("hidden")
+                })
+                document.getElementById("cc").addEventListener("change", (e) => {
+                    document.getElementById("ac").toggleAttribute("hidden")
+                })
+                document.getElementById("ci").addEventListener("change", (e) => {
+                    document.getElementById("ai").toggleAttribute("hidden")
+                })
+
+            </script>
+        </div>
+    </div>
+    <footer>
+        <p>Last edited - 20250413<br>
+        <b>Leiston Metro Announcement Sign Editor</b> made by xPeachy</p>
+    </footer>
+</body>
+
+</html>
