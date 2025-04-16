@@ -49,14 +49,15 @@
         }
         .tooltip {
             width: 20%;
-            min-width: 17em;
+            min-width: 17.5em;
         }
         #output {
             margin-top: 1.2em;
         }
         footer {
+            padding-left: 8px;
             width: 100%;
-            background-color: gainsboro;
+            background-color: rgb(189, 189, 189);
             flex-grow: 0;
             flex-shrink: 0;
         }
@@ -66,6 +67,17 @@
         }
         .sections {
             margin-bottom: .8em;
+        }
+        @media screen and (width < 960px) {
+            #content {
+                flex-direction: column-reverse;
+            }
+            .tooltip {
+                width: auto;
+            }
+            code.codeoutput {
+                width: auto;
+            }
         }
     </style>
 </head>
@@ -82,17 +94,32 @@
             <p>Charons Line / 查朗斯綫 / CHL / <span style="background-color: #0000aa;"> --- </span></p> 
             <p>Airport Line / 機場綫 / AIL / <span style="background-color: #00aaaa;"> --- </span></p> 
             <hr>
-            <h4>Config <small> - 20250413 Edition</small></h4>
-            <p>0   - Iron fence location</p>
-            <p>91  - <code>+train removeempty</code></p>
-            <p>92  - Next Station sign</p>
-            <p>104 - (Interchange / Connections)</p>
-            <p>116 - (Connections)</p>
-            <br>
-            <p>-116 - (Shortly arriving Sign)</p>
-            <p>-104 - Arriving at Sign / (Terminus Sign)</p>
-            <p>-92  - Doors opening Sign</p>
-            <p>-91  - Train Spawn cmd block</p>
+            <h4>Config <small> - 20250415 Edition</small></h4>
+
+            <p>-203 - <code>launcher 203 / 0.45 / continue</code></p>
+            <p>-162 - (Arriving at Sign)</p>
+            <p>-150 - Arriving at Sign / (Terminus Sign)</p>
+            <p>-138 - Doors opening Sign</p>
+            <p>-137 - spawner? (-)0.45; XXX_Train</p>
+            <p>-46  - Iron Fence Location</p>
+            <p>0    - <code>station 247 / 20 / continue</code></p>
+            <p>46   - Iron Fence Location</p>
+            <p>137  - <code>+train removeempty</code></p>
+            <p>138  - Next Station sign</p>
+            <p>150  - (Interchange / Connections)</p>
+            <p>162  - (Connections)</p>
+
+            <!-- <h5>arrive station announcement order:</h5>
+            <ul>
+                <li>shortly arriving</li>
+                <li>terminating service</li>
+                <li>door</li>
+            </ul>
+
+            depart station announcement order:
+            next station
+            interchange
+            connect to -->
         </div>
 
         <div id="main">
@@ -297,7 +324,7 @@
         </div>
     </div>
     <footer>
-        <p>Last edited - 20250413<br>
+        <p>Last edited - 20250416<br>
         <b>Leiston Metro Announcement Sign Editor</b> made by xPeachy</p>
     </footer>
 </body>
